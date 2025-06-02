@@ -173,6 +173,13 @@
       <button id="playPauseBtn" class="btn btn-light btn-sm mx-1">▶️</button>
       <button id="nextBtn" class="btn btn-light btn-sm mx-1">⏭️</button>
     </div>
+    
+<div class="form-check form-switch text-white">
+  <input class="form-check-input" type="checkbox" id="autoplayToggle" checked>
+  <label class="form-check-label" for="autoplayToggle">Autoplay Next</label>
+</div>
+
+
 <div class="d-flex align-items-center gap-2">
   <span id="currentTime">0:00</span>
   <input type="range" id="progress" min="0" max="100" />
@@ -184,19 +191,20 @@
   <audio id="audioPlayer"></audio>
 
 <script>
-  document.addEventListener("DOMContentLoaded", () => {
-    const audioPlayer = document.getElementById("audioPlayer");
-    const playPauseBtn = document.getElementById("playPauseBtn");
-    const prevBtn = document.getElementById("prevBtn");
-    const nextBtn = document.getElementById("nextBtn");
-    const progress = document.getElementById("progress");
-    const currentTimeDisplay = document.getElementById("currentTime");
-    const durationDisplay = document.getElementById("duration");
-    const currentSong = document.getElementById("currentSong");
-    const songsContainer = document.getElementById("songsContainer");
+  // Global declarations so all functions and event listeners can access them
+  const audioPlayer = document.getElementById("audioPlayer");
+  const playPauseBtn = document.getElementById("playPauseBtn");
+  const prevBtn = document.getElementById("prevBtn");
+  const nextBtn = document.getElementById("nextBtn");
+  const progress = document.getElementById("progress");
+  const currentTimeDisplay = document.getElementById("currentTime");
+  const durationDisplay = document.getElementById("duration");
+  const currentSong = document.getElementById("currentSong");
+  const songsContainer = document.getElementById("songsContainer");
+  const autoplayToggle = document.getElementById("autoplayToggle");
 
-    const playlist1Songs = [
-      { title: "Qaafirana", src: "songs/song1.mp3" },
+  const playlist1Songs = [
+    { title: "Qaafirana", src: "songs/song1.mp3" },
     { title: "WALLOWS", src: "songs/song2.mp3" },
     { title: "khubsurat", src: "songs/song3.mp3" },
     { title: "Haan Ki Haan", src: "songs/song4.mp3" },
@@ -206,48 +214,56 @@
     { title: "Iraaday", src: "songs/song8.mp3" },
     { title: "Savera", src: "songs/song9.mp3" },
     { title: "ve haniya", src: "songs/song10.mp3" }
-    ];
+  ];
 
-    let currentIndex = -1;
+  let currentIndex = -1;
+  let autoplayEnabled = true;
 
-    function loadAndPlay(song) {
-      audioPlayer.src = song.src;
-      currentSong.textContent = song.title;
-      audioPlayer.play();
-      playPauseBtn.textContent = "⏸️";
-    }
+  function formatTime(seconds) {
+    const mins = Math.floor(seconds / 60);
+    const secs = Math.floor(seconds % 60);
+    return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+  }
 
-    function renderSongs() {
-      songsContainer.innerHTML = "";
-      playlist1Songs.forEach((song, index) => {
-        const colDiv = document.createElement("div");
-        colDiv.classList.add("col-6", "col-sm-4", "col-md-3", "col-lg-2");
+  function loadAndPlay(song) {
+    audioPlayer.src = song.src;
+    currentSong.textContent = song.title;
+    audioPlayer.play();
+    playPauseBtn.textContent = "⏸️";
+  }
 
+  function renderSongs() {
+    songsContainer.innerHTML = "";
+    playlist1Songs.forEach((song, index) => {
+      const colDiv = document.createElement("div");
+      colDiv.classList.add("col-6", "col-sm-4", "col-md-3", "col-lg-2");
 
-        const cardDiv = document.createElement("div");
-        cardDiv.classList.add("card", "song-card");
-        cardDiv.dataset.title = song.title;
-        cardDiv.dataset.src = song.src;
+      const cardDiv = document.createElement("div");
+      cardDiv.classList.add("card", "song-card");
+      cardDiv.dataset.title = song.title;
+      cardDiv.dataset.src = song.src;
 
-        const imgPath = song.src.replace(".mp3", ".jpg");
+      const imgPath = song.src.replace(".mp3", ".jpg");
 
-        cardDiv.innerHTML = `
-          <img src="${imgPath}" class="card-img-top" alt="${song.title}" onerror="this.src='songs/default.jpg'" />
-          <div class="card-body">
-            <h5 class="card-title">${song.title}</h5>
-            <!-- <p class="card-text">Some description</p> -->
-          </div>
-        `;
+      cardDiv.innerHTML = `
+        <img src="${imgPath}" class="card-img-top" alt="${song.title}" onerror="this.src='songs/default.jpg'" />
+        <div class="card-body">
+          <h5 class="card-title">${song.title}</h5>
+        </div>
+      `;
 
-        cardDiv.addEventListener("click", () => {
-          currentIndex = index;
-          loadAndPlay(song);
-        });
-
-        colDiv.appendChild(cardDiv);
-        songsContainer.appendChild(colDiv);
+      cardDiv.addEventListener("click", () => {
+        currentIndex = index;
+        loadAndPlay(song);
       });
-    }
+
+      colDiv.appendChild(cardDiv);
+      songsContainer.appendChild(colDiv);
+    });
+  }
+
+  document.addEventListener("DOMContentLoaded", () => {
+    renderSongs();
 
     playPauseBtn.addEventListener("click", () => {
       if (audioPlayer.paused) {
@@ -273,15 +289,13 @@
       }
     });
 
-audioPlayer.addEventListener("timeupdate", () => {
-  if (audioPlayer.duration) {
-    progress.value = (audioPlayer.currentTime / audioPlayer.duration) * 100;
-
-    currentTimeDisplay.textContent = formatTime(audioPlayer.currentTime);
-    durationDisplay.textContent = formatTime(audioPlayer.duration);
-  }
-});
-
+    audioPlayer.addEventListener("timeupdate", () => {
+      if (audioPlayer.duration) {
+        progress.value = (audioPlayer.currentTime / audioPlayer.duration) * 100;
+        currentTimeDisplay.textContent = formatTime(audioPlayer.currentTime);
+        durationDisplay.textContent = formatTime(audioPlayer.duration);
+      }
+    });
 
     progress.addEventListener("input", () => {
       if (audioPlayer.duration) {
@@ -289,14 +303,22 @@ audioPlayer.addEventListener("timeupdate", () => {
       }
     });
 
-    renderSongs(); // Render on load
+    autoplayToggle.addEventListener("change", () => {
+      autoplayEnabled = autoplayToggle.checked;
+    });
   });
-  function formatTime(seconds) {
-  const mins = Math.floor(seconds / 60);
-  const secs = Math.floor(seconds % 60);
-  return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
-}
+
+  // Move this outside so it works properly
+  audioPlayer.addEventListener("ended", () => {
+    if (autoplayEnabled && currentIndex < playlist1Songs.length - 1) {
+      currentIndex++;
+      loadAndPlay(playlist1Songs[currentIndex]);
+    } else {
+      playPauseBtn.textContent = "▶️";
+    }
+  });
 </script>
+
 
 
 </div>
