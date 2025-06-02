@@ -50,8 +50,9 @@
   justify-content: center;
 }
 .card.song-card {
-  width: 100%;
+   width: 100%;
   max-width: 200px;
+  margin: auto;
 }
 
 
@@ -110,6 +111,9 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+    flex-wrap: wrap;
+    text-align: center;
+    gap: 10px;
   }
 
   .player button {
@@ -173,6 +177,22 @@
   .btn-success:hover {
     background-color: #1ed760;
   }
+
+  @media (max-width: 576px) {
+  .sidebar {
+    padding: 10px;
+  }
+
+  .player {
+    flex-direction: column;
+    align-items: center;
+    padding: 15px;
+  }
+
+  .card-img-top {
+    height: 150px;
+  }
+}
 </style>
 
 </head>
@@ -204,7 +224,8 @@
 </div>
 
 <div class="row g-4 mt-2">
-  <div class="col-md-3">
+  <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+
     <div class="card song-card" data-title="Song 1" data-src="songs/song1.mp3" data-url="playlist1.html">
       <img src="album/Untitled design.jpg" class="card-img-top" alt="Album" />
       <div class="card-body">
@@ -214,7 +235,8 @@
     </div>
   </div>
 
-  <div class="col-md-3">
+  <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+
     <div class="card song-card" data-title="Song 2" data-src="songs/song2.mp3" data-url="playlist2.html">
       <img src="album/Untitled design2.jpg" class="card-img-top" alt="Album" />
       <div class="card-body">
