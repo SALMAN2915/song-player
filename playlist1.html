@@ -111,6 +111,7 @@
   .p-4 {
     padding-bottom: 80px; /* space for player bar */
   }
+
 </style>
 
 
@@ -120,7 +121,8 @@
   <div class="container-fluid">
     <div class="row">
 
-      <div class="col-2 sidebar d-flex flex-column p-3">
+      <div class="col-12 col-md-3 col-lg-2 sidebar d-flex flex-column p-3">
+
         <h4 class="text-white">Spotify</h4>
         <a href="spotify.html">Home</a>
         <a href="search.html">Search</a>
@@ -132,7 +134,7 @@
       </div>
 
       <!-- Main Content -->
-      <div class="col-10 p-4">
+      <div class="col-12 col-md-9 col-lg-10 p-4">
         <h3>Playlist 1</h3>
         <div class="row g-4 mt-2" id="songsContainer">
           <!-- Songs will be loaded here -->
@@ -142,7 +144,8 @@
   </div>
 
   <!-- Music Player -->
-  <div class="player d-flex justify-content-between align-items-center">
+  <div class="player container-fluid d-flex flex-column flex-md-row justify-content-between align-items-center text-center text-md-start gap-2">
+
     <div>
       <strong id="currentSong">Song</strong><br />
       <small>Player</small>
@@ -201,7 +204,8 @@
       songsContainer.innerHTML = "";
       playlist1Songs.forEach((song, index) => {
         const colDiv = document.createElement("div");
-        colDiv.classList.add("col-md-3");
+        colDiv.classList.add("col-6", "col-sm-4", "col-md-3", "col-lg-2");
+
 
         const cardDiv = document.createElement("div");
         cardDiv.classList.add("card", "song-card");
@@ -250,11 +254,14 @@
       }
     });
 
-    audioPlayer.addEventListener("timeupdate", () => {
-      if (audioPlayer.duration) {
-        progress.value = (audioPlayer.currentTime / audioPlayer.duration) * 100;
-      }
-    });
+audioPlayer.addEventListener("timeupdate", () => {
+  if (audioPlayer.duration) {
+    progress.value = (audioPlayer.currentTime / audioPlayer.duration) * 100;
+    currentTimeDisplay.textContent = formatTime(audioPlayer.currentTime);
+    durationDisplay.textContent = formatTime(audioPlayer.duration);
+  }
+});
+
 
     progress.addEventListener("input", () => {
       if (audioPlayer.duration) {
@@ -278,7 +285,8 @@ document.getElementById("yourLibraryLink").addEventListener("click", function(e)
 
   allSongs.forEach(song => {
     const colDiv = document.createElement("div");
-    colDiv.classList.add("col-md-3");
+    colDiv.classList.add("col-6", "col-sm-4", "col-md-3", "col-lg-2");
+
 
     const cardDiv = document.createElement("div");
     cardDiv.classList.add("card", "song-card");
@@ -302,6 +310,11 @@ document.getElementById("yourLibraryLink").addEventListener("click", function(e)
     songsContainer.appendChild(colDiv);
   });
   });
+    function formatTime(seconds) {
+  const mins = Math.floor(seconds / 60);
+  const secs = Math.floor(seconds % 60);
+  return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+}
   </script>
 </body>
 </html>
