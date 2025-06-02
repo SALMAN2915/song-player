@@ -101,6 +101,78 @@
       width: 150px;
       accent-color: #1db954;
     }
+
+/* Medium Devices (Tablets) */
+@media (min-width: 577px) and (max-width: 991.98px) {
+  .card-img-top {
+    height: 180px;
+  }
+
+  .main-content {
+    padding: 20px;
+  }
+
+  .sidebar {
+    width: 20%;
+  }
+
+  .main-content {
+    margin-left: 20%;
+  }
+
+  .player {
+    padding: 10px 20px;
+  }
+
+  input[type=range] {
+    width: 120px;
+  }
+}
+
+/* Small Devices (Mobiles) */
+@media (max-width: 576px) {
+  .sidebar {
+    position: relative;
+    width: 100%;
+    height: auto;
+  }
+
+  .main-content {
+    margin-left: 0;
+    padding: 20px;
+  }
+
+  .player {
+    flex-direction: column;
+    align-items: center;
+    padding: 10px;
+  }
+
+  .card-img-top {
+    height: 150px;
+  }
+
+  input[type=range] {
+    width: 100px;
+  }
+}
+
+/* Large Screens (Desktops) */
+@media (min-width: 992px) {
+  .card-img-top {
+    height: 200px;
+  }
+
+  .main-content {
+    padding: 30px 40px 100px;
+  }
+
+  input[type=range] {
+    width: 150px;
+  }
+}
+
+
   </style>
 </head>
 <body>
@@ -133,8 +205,8 @@
   <!-- Music Player -->
   <div class="player">
     <div>
-      <strong id="currentSong">No song</strong><br />
-      <small>Local Artist</small>
+      <strong id="currentSong">Song</strong><br />
+      <small>Player</small>
     </div>
     <div>
       <button id="prevBtn" class="btn btn-light btn-sm mx-1">⏮️</button>
