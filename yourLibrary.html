@@ -173,9 +173,13 @@
     <button id="playPauseBtn" class="btn btn-outline-light btn-sm mx-1">▶️</button>
     <button id="nextBtn" class="btn btn-outline-light btn-sm mx-1">⏭️</button>
   </div>
-  <div>
-    <input type="range" id="progress" min="0" max="100" />
-  </div>
+<div class="d-flex align-items-center gap-2">
+  <span id="currentTime">0:00</span>
+  <input type="range" id="progress" min="0" max="100" />
+  <span id="duration">0:00</span>
+</div>
+</div>
+
 </div>
 
 <!-- Audio element -->
@@ -190,6 +194,9 @@
   const progress = document.getElementById("progress");
   const currentSong = document.getElementById("currentSong");
   const songsContainer = document.getElementById("songsContainer");
+  const currentTimeDisplay = document.getElementById("currentTime");
+const durationDisplay = document.getElementById("duration");
+
 
   const playlist1Songs = [
     { title: "Qaafirana", src: "songs/song1.mp3" },
@@ -280,17 +287,31 @@
     }
   });
 
-  audioPlayer.addEventListener("timeupdate", () => {
-    if (audioPlayer.duration) {
-      progress.value = (audioPlayer.currentTime / audioPlayer.duration) * 100;
-    }
-  });
+ audioPlayer.addEventListener("timeupdate", () => {
+  if (audioPlayer.duration) {
+    progress.value = (audioPlayer.currentTime / audioPlayer.duration) * 100;
 
-  progress.addEventListener("input", () => {
-    if (audioPlayer.duration) {
-      audioPlayer.currentTime = (progress.value / 100) * audioPlayer.duration;
-    }
-  });
+    currentTimeDisplay.textContent = formatTime(audioPlayer.currentTime);
+    durationDisplay.textContent = formatTime(audioPlayer.duration);
+  }
+});
+
+
+    progress.addEventListener("input", () => {
+      if (audioPlayer.duration) {
+        audioPlayer.currentTime = (progress.value / 100) * audioPlayer.duration;
+      }
+    });
+
+    // Initial load
+    window.onload = performSearch;
+  function formatTime(seconds) {
+  const mins = Math.floor(seconds / 60);
+  const secs = Math.floor(seconds % 60);
+  return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+}
+  
 </script>
+ <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
