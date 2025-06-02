@@ -222,6 +222,19 @@
 // Call the function on page load
 setGreeting();
 
+     // Greeting function already here
+  setGreeting();
+
+  // Make song-card clickable and redirect to the URL
+  document.querySelectorAll(".song-card").forEach(card => {
+    card.addEventListener("click", function () {
+      const url = this.getAttribute("data-url");
+      if (url) {
+        window.location.href = url;
+      }
+    });
+  });
+
 </script>
 </body>
 </html>
