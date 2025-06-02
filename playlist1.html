@@ -118,20 +118,42 @@
 </head>
 <body>
 
-  <div class="container-fluid">
+   <div class="container-fluid">
     <div class="row">
+    <!-- Responsive Navbar for Sidebar -->
+<nav class="navbar navbar-dark bg-black d-md-none">
+  <div class="container-fluid">
+    <a class="navbar-brand text-white" href="#">Spotify</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mobileSidebar">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+  </div>
+</nav>
 
-      <div class="col-12 col-md-3 col-lg-2 sidebar d-flex flex-column p-3">
+<!-- Collapsible Sidebar on Mobile -->
+<div class="collapse bg-black d-md-none" id="mobileSidebar">
+  <div class="p-3">
+    <a href="spotify.html" class="d-block text-white py-1">Home</a>
+    <a href="search.html" class="d-block text-white py-1">Search</a>
+    <a href="yourLibrary.html" class="d-block text-white py-1">Your Library</a>
+    <hr class="bg-secondary" />
+    <a href="playlist1.html" class="d-block text-white py-1">Playlist 1</a>
+    <a href="playlist2.html" class="d-block text-white py-1">Playlist 2</a>
+    <a href="#" class="d-block text-white py-1">Liked Songs</a>
+  </div>
+</div>
 
-        <h4 class="text-white">Spotify</h4>
-        <a href="spotify.html">Home</a>
-        <a href="search.html">Search</a>
-        <a href="yourLibrary.html">Your Library</a>
-        <hr class="bg-secondary" />
-        <a href="playlist1.html">Playlist 1</a>
-        <a href="playlist2.html">Playlist 2</a>
-        <a href="#">Liked Songs</a>
-      </div>
+<!-- Static Sidebar for Desktop -->
+<div class="col-2 sidebar d-none d-md-flex flex-column p-3">
+  <h4 class="text-white">Spotify</h4>
+  <a href="spotify.html">Home</a>
+  <a href="search.html">Search</a>
+  <a href="yourLibrary.html" id="yourLibraryLink">Your Library</a>
+  <hr class="bg-secondary" />
+  <a href="playlist1.html">Playlist 1</a>
+  <a href="playlist2.html">Playlist 2</a>
+  <a href="#">Liked Songs</a>
+</div>
 
       <!-- Main Content -->
       <div class="col-12 col-md-9 col-lg-10 p-4">
@@ -316,5 +338,7 @@ document.getElementById("yourLibraryLink").addEventListener("click", function(e)
   return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
 }
   </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
 </body>
 </html>
