@@ -143,7 +143,7 @@
   <h4 class="text-white">Spotify</h4>
   <a href="spotify.html">Home</a>
   <a href="search.html">Search</a>
-  <a href="yourLibrary.html" id="yourLibraryLink">Your Library</a>
+  <a href="yourLibrary.html">Your Library</a>
   <hr class="bg-secondary" />
   <a href="playlist1.html">Playlist 1</a>
   <a href="playlist2.html">Playlist 2</a>
@@ -173,6 +173,12 @@
       <button id="playPauseBtn" class="btn btn-light btn-sm mx-1">▶️</button>
       <button id="nextBtn" class="btn btn-light btn-sm mx-1">⏭️</button>
     </div>
+
+<div class="form-check form-switch text-white">
+  <input class="form-check-input" type="checkbox" id="autoplayToggle" checked>
+  <label class="form-check-label" for="autoplayToggle">Autoplay Next</label>
+</div>
+
 <div class="d-flex align-items-center gap-2">
   <span id="currentTime">0:00</span>
   <input type="range" id="progress" min="0" max="100" />
@@ -184,70 +190,78 @@
   <audio id="audioPlayer"></audio>
 
 <script>
-  document.addEventListener("DOMContentLoaded", () => {
-    const audioPlayer = document.getElementById("audioPlayer");
-    const playPauseBtn = document.getElementById("playPauseBtn");
-    const prevBtn = document.getElementById("prevBtn");
-    const nextBtn = document.getElementById("nextBtn");
-    const progress = document.getElementById("progress");
-    const currentTimeDisplay = document.getElementById("currentTime");
-    const durationDisplay = document.getElementById("duration");
-    const currentSong = document.getElementById("currentSong");
-    const songsContainer = document.getElementById("songsContainer");
+  const audioPlayer = document.getElementById("audioPlayer");
+  const playPauseBtn = document.getElementById("playPauseBtn");
+  const prevBtn = document.getElementById("prevBtn");
+  const nextBtn = document.getElementById("nextBtn");
+  const progress = document.getElementById("progress");
+  const currentTimeDisplay = document.getElementById("currentTime");
+  const durationDisplay = document.getElementById("duration");
+  const currentSong = document.getElementById("currentSong");
+  const songsContainer = document.getElementById("songsContainer");
+  const autoplayToggle = document.getElementById("autoplayToggle");
 
-    const playlist1Songs = [
-      { title: "Raabta", src: "songs/song11.mp3" },
-      { title: "Samjhawan", src: "songs/song12.mp3" },
-      { title: "Tum Se", src: "songs/song13.mp3" },
-      { title: "Pahadon Mein", src: "songs/song14.mp3" },
-      { title: "Meri Aashiqui", src: "songs/song15.mp3" },
-      { title: "Baat", src: "songs/song16.mp3" },
-      { title: "Sahiba", src: "songs/song17.mp3" },
-      { title: "UFF", src: "songs/song18.mp3" },
-      { title: "O Meri Laila", src: "songs/song19.mp3" },
-      { title: "Main Hoon Hero Tera", src: "songs/song20.mp3" }
-    ];
+  const playlist2Songs = [
+    { title: "Raabta", src: "songs/song11.mp3" },
+    { title: "Samjhawan", src: "songs/song12.mp3" },
+    { title: "Tum Se", src: "songs/song13.mp3" },
+    { title: "Pahadon Mein", src: "songs/song14.mp3" },
+    { title: "Meri Aashiqui", src: "songs/song15.mp3" },
+    { title: "Sunn Raha Hai", src: "songs/song16.mp3" },
+    { title: "Kaise Hua", src: "songs/song17.mp3" },
+    { title: "Jeene Laga Hoon", src: "songs/song18.mp3" },
+    { title: "Tera Hone Laga Hoon", src: "songs/song19.mp3" },
+    { title: "Bekhayali", src: "songs/song20.mp3" }
+  ];
 
-    let currentIndex = -1;
+  let currentIndex = -1;
+  let autoplayEnabled = true;
 
-    function loadAndPlay(song) {
-      audioPlayer.src = song.src;
-      currentSong.textContent = song.title;
-      audioPlayer.play();
-      playPauseBtn.textContent = "⏸️";
-    }
+  function formatTime(seconds) {
+    const mins = Math.floor(seconds / 60);
+    const secs = Math.floor(seconds % 60);
+    return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+  }
 
-    function renderSongs() {
-      songsContainer.innerHTML = "";
-      playlist1Songs.forEach((song, index) => {
-        const colDiv = document.createElement("div");
-        colDiv.classList.add("col-6", "col-sm-4", "col-md-3", "col-lg-2");
+  function loadAndPlay(song) {
+    audioPlayer.src = song.src;
+    currentSong.textContent = song.title;
+    audioPlayer.play();
+    playPauseBtn.textContent = "⏸️";
+  }
 
+  function renderSongs() {
+    songsContainer.innerHTML = "";
+    playlist2Songs.forEach((song, index) => {
+      const colDiv = document.createElement("div");
+      colDiv.classList.add("col-6", "col-sm-4", "col-md-3", "col-lg-2");
 
-        const cardDiv = document.createElement("div");
-        cardDiv.classList.add("card", "song-card");
-        cardDiv.dataset.title = song.title;
-        cardDiv.dataset.src = song.src;
+      const cardDiv = document.createElement("div");
+      cardDiv.classList.add("card", "song-card");
+      cardDiv.dataset.title = song.title;
+      cardDiv.dataset.src = song.src;
 
-        const imgPath = song.src.replace(".mp3", ".jpg");
+      const imgPath = song.src.replace(".mp3", ".jpg");
 
-        cardDiv.innerHTML = `
-          <img src="${imgPath}" class="card-img-top" alt="${song.title}" onerror="this.src='songs/default.jpg'" />
-          <div class="card-body">
-            <h5 class="card-title">${song.title}</h5>
-            <!-- <p class="card-text">Some description</p> -->
-          </div>
-        `;
+      cardDiv.innerHTML = `
+        <img src="${imgPath}" class="card-img-top" alt="${song.title}" onerror="this.src='songs/default.jpg'" />
+        <div class="card-body">
+          <h5 class="card-title">${song.title}</h5>
+        </div>
+      `;
 
-        cardDiv.addEventListener("click", () => {
-          currentIndex = index;
-          loadAndPlay(song);
-        });
-
-        colDiv.appendChild(cardDiv);
-        songsContainer.appendChild(colDiv);
+      cardDiv.addEventListener("click", () => {
+        currentIndex = index;
+        loadAndPlay(song);
       });
-    }
+
+      colDiv.appendChild(cardDiv);
+      songsContainer.appendChild(colDiv);
+    });
+  }
+
+  document.addEventListener("DOMContentLoaded", () => {
+    renderSongs();
 
     playPauseBtn.addEventListener("click", () => {
       if (audioPlayer.paused) {
@@ -262,26 +276,24 @@
     prevBtn.addEventListener("click", () => {
       if (currentIndex > 0) {
         currentIndex--;
-        loadAndPlay(playlist1Songs[currentIndex]);
+        loadAndPlay(playlist2Songs[currentIndex]);
       }
     });
 
     nextBtn.addEventListener("click", () => {
-      if (currentIndex < playlist1Songs.length - 1) {
+      if (currentIndex < playlist2Songs.length - 1) {
         currentIndex++;
-        loadAndPlay(playlist1Songs[currentIndex]);
+        loadAndPlay(playlist2Songs[currentIndex]);
       }
     });
 
-audioPlayer.addEventListener("timeupdate", () => {
-  if (audioPlayer.duration) {
-    progress.value = (audioPlayer.currentTime / audioPlayer.duration) * 100;
-
-    currentTimeDisplay.textContent = formatTime(audioPlayer.currentTime);
-    durationDisplay.textContent = formatTime(audioPlayer.duration);
-  }
-});
-
+    audioPlayer.addEventListener("timeupdate", () => {
+      if (audioPlayer.duration) {
+        progress.value = (audioPlayer.currentTime / audioPlayer.duration) * 100;
+        currentTimeDisplay.textContent = formatTime(audioPlayer.currentTime);
+        durationDisplay.textContent = formatTime(audioPlayer.duration);
+      }
+    });
 
     progress.addEventListener("input", () => {
       if (audioPlayer.duration) {
@@ -289,14 +301,22 @@ audioPlayer.addEventListener("timeupdate", () => {
       }
     });
 
-    renderSongs(); // Render on load
+    autoplayToggle.addEventListener("change", () => {
+      autoplayEnabled = autoplayToggle.checked;
+    });
   });
-  function formatTime(seconds) {
-  const mins = Math.floor(seconds / 60);
-  const secs = Math.floor(seconds % 60);
-  return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
-}
+
+  // Handle autoplay on song end
+  audioPlayer.addEventListener("ended", () => {
+    if (autoplayEnabled && currentIndex < playlist2Songs.length - 1) {
+      currentIndex++;
+      loadAndPlay(playlist2Songs[currentIndex]);
+    } else {
+      playPauseBtn.textContent = "▶️";
+    }
+  });
 </script>
+
 
 
 </div>
